@@ -22,3 +22,59 @@
 ## 5) Also, do something and/or throw an exception/message if the
 ##    numpy and matplotlib packages are not installed.
 ##
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from simple_package.graphics import histogram
+
+def check_dependencies():
+    #Check if required packages are installed
+    try:
+        import numpy
+        import matplotlib
+    except ImportError as e:
+        raise ImportError(f"Required package not installed: {e}. Please install numpy and matplotlib.")
+
+def validate_input(data):
+    #Validate input and convert to numpy array if needed
+    check_dependencies()
+    
+    if not isinstance(data, (list, np.ndarray)):
+        raise TypeError("Input must be a list or numpy array")
+    
+    if isinstance(data, list):
+        data = np.array(data)
+    
+    if data.size == 0:
+        raise ValueError("Input data cannot be empty")
+    
+    return data
+
+def calculate_statistics(data):
+    data = validate_input(data)
+    
+    # Calculate statistics
+    mean_val = np.mean(data)
+    median_val = np.median(data)
+    std_val = np.std(data)
+    
+    stats = {
+        'mean': mean_val,
+        'median': median_val,
+        'std': std_val
+    }
+    
+    # Printing results
+    print(f"Mean: {mean_val:.4f}")
+    print(f"Median: {median_val:.4f}")
+    print(f"Standard Deviation: {std_val:.4f}")
+    
+    return stats
+
+def plot_histogram(data):
+    data = validate_input(data)
+    stats = calculate_statistics(data)  # This will also print the stats
+    
+    # Use the graphics module to create the plot
+    histogram(data, stats['mean'], stats['median'])
